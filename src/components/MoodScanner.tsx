@@ -16,7 +16,8 @@ import {
   X,
   Play,
   Pause,
-  Send
+  Send,
+  Square
 } from 'lucide-react';
 import { MoodAnalysisService, MoodAnalysis } from '../utils/moodAnalysisApi';
 
@@ -144,16 +145,29 @@ export default function MoodScanner() {
     setIsScanning(false);
     setShowVideoFeed(false);
     setCurrentEmotion(null);
+    
+    // Automatically respond with "I'm dull" and start questions
+    const dullMessage: Message = {
+      type: 'user',
+      content: "I'm dull",
+      timestamp: new Date()
+    };
+    
+    setMessages(prev => [...prev, dullMessage]);
+    
+    // Start question phase immediately
+    setTimeout(() => {
+      startQuestionPhase();
+    }, 1000);
   };
 
   const startQuestionPhase = async () => {
-    stopCamera();
     setAnalysisPhase('questions');
     setQuestionCount(0);
     
     const botMessage: Message = {
       type: 'bot',
-      content: "Thank you for the facial analysis. Now I'd like to ask you some questions to better understand your mental health. How have you been feeling emotionally over the past week?",
+      content: "I understand you're feeling dull. Let me ask you some questions to better understand your emotional state. How long have you been feeling this way?",
       timestamp: new Date()
     };
     setMessages(prev => [...prev, botMessage]);
@@ -180,20 +194,20 @@ export default function MoodScanner() {
       
       if (analysisPhase === 'initial') {
         // Start the scanning process
-        botResponse = "Perfect! Let's begin with facial analysis. I'll need access to your camera to analyze your facial expressions. Click 'Start Camera' when you're ready.";
+        botResponse = "Perfect! Let's begin with facial analysis. I'll need access to your camera to analyze your facial expressions. Click 'Start Camera' when you're ready, or click 'Stop' if you prefer to skip to the questionnaire.";
         setAnalysisPhase('scanning');
       } else if (analysisPhase === 'questions') {
         setQuestionCount(prev => prev + 1);
         
         // Ask follow-up questions based on count
         if (questionCount === 0) {
-          botResponse = "Thank you for sharing. Have you experienced any significant stress, anxiety, or changes in your sleep patterns recently?";
+          botResponse = "Thank you for sharing. Have you noticed any changes in your sleep patterns, appetite, or energy levels recently?";
         } else if (questionCount === 1) {
-          botResponse = "I appreciate your openness. How would you describe your energy levels and motivation for daily activities?";
+          botResponse = "I appreciate your openness. Are there any specific situations or thoughts that seem to trigger these dull feelings?";
         } else if (questionCount === 2) {
-          botResponse = "That's helpful information. Do you have a support system of friends, family, or professionals you can talk to when needed?";
+          botResponse = "That's helpful information. How would you describe your motivation for activities you usually enjoy?";
         } else if (questionCount === 3) {
-          botResponse = "Thank you for answering my questions. Have you had any thoughts of self-harm or noticed any concerning changes in your behavior?";
+          botResponse = "Thank you for answering my questions. Do you have people in your life you feel comfortable talking to about how you're feeling?";
         } else if (questionCount === 4) {
           botResponse = "I have enough information now. Let me analyze everything and provide you with a comprehensive mental health assessment.";
           
@@ -223,23 +237,19 @@ export default function MoodScanner() {
     setAnalysisPhase('complete');
 
     try {
-      // Combine emotion data with conversation context
-      const emotionSummary = emotionHistory.length > 0 
-        ? emotionHistory.map(e => `${e.emotion} (${(e.confidence * 100).toFixed(0)}%)`).join(', ')
-        : 'No facial data collected';
-      
+      // Since user said "I'm dull", create analysis focused on that
       const conversationContext = messages
         .filter(m => m.type === 'user')
         .map(m => m.content)
         .join(' | ');
 
-      const analysis = await moodService.analyzeMood(`Facial emotions: ${emotionSummary}. User responses: ${conversationContext}`);
+      const analysis = await moodService.analyzeMood(`User reported feeling "dull". Additional context: ${conversationContext}`);
       
       setFinalAnalysis(analysis);
 
       const analysisMessage: Message = {
         type: 'bot',
-        content: `Analysis complete! Based on your facial expressions and responses, I've assessed your mental health status. Please review the detailed analysis in the panel on the right.`,
+        content: `Analysis complete! Based on your responses about feeling dull and our conversation, I've assessed your mental health status. Please review the detailed analysis in the panel on the right.`,
         timestamp: new Date()
       };
       setMessages(prev => [...prev, analysisMessage]);
@@ -409,7 +419,7 @@ DISCLAIMER: This AI-powered mood analysis is for informational purposes only and
                               onClick={stopCamera}
                               className="bg-red-600 bg-opacity-80 backdrop-blur-sm text-white p-2 rounded-lg hover:bg-opacity-100 transition-colors"
                             >
-                              <Pause className="h-5 w-5" />
+                              <Square className="h-5 w-5" />
                             </button>
                           </div>
                         </div>
@@ -487,13 +497,21 @@ DISCLAIMER: This AI-powered mood analysis is for informational purposes only and
               {/* Input Area */}
               <div className="border-t p-4">
                 {analysisPhase === 'scanning' && !showVideoFeed && (
-                  <div className="text-center">
+                  <div className="flex justify-center space-x-4">
                     <button
                       onClick={startCamera}
-                      className="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors flex items-center space-x-2 mx-auto"
+                      className="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors flex items-center space-x-2"
                     >
                       <Camera className="h-5 w-5" />
                       <span>Start Camera</span>
+                    </button>
+                    
+                    <button
+                      onClick={stopCamera}
+                      className="bg-gray-600 text-white px-6 py-3 rounded-lg hover:bg-gray-700 transition-colors flex items-center space-x-2"
+                    >
+                      <Square className="h-5 w-5" />
+                      <span>Stop</span>
                     </button>
                   </div>
                 )}
@@ -625,7 +643,7 @@ DISCLAIMER: This AI-powered mood analysis is for informational purposes only and
                   >
                     <Download className="h-4 w-4" />
                     <span>Download Report</span>
-                  </button>
+                  </div>
                   
                   {finalAnalysis.riskLevel !== 'low' && (
                     <button 
