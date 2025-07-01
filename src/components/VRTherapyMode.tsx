@@ -27,7 +27,7 @@ interface VRTherapyModeProps {
 
 export default function VRTherapyMode({ isOpen, onClose, exercise }: VRTherapyModeProps) {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [timer, setTimer] = useState(exercise.duration);
+  const [timer, setTimer] = useState(5); // Set to 5 seconds
   const [completedReps, setCompletedReps] = useState(0);
   const [currentEnvironment, setCurrentEnvironment] = useState('beach');
   const [isMuted, setIsMuted] = useState(false);
@@ -70,7 +70,7 @@ export default function VRTherapyMode({ isOpen, onClose, exercise }: VRTherapyMo
 
   const currentEnv = environments.find(env => env.id === currentEnvironment) || environments[0];
 
-  // Timer effect
+  // Timer effect - always use 5 seconds
   useEffect(() => {
     let interval: NodeJS.Timeout;
     if (isPlaying && timer > 0) {
@@ -80,7 +80,7 @@ export default function VRTherapyMode({ isOpen, onClose, exercise }: VRTherapyMo
             setIsPlaying(false);
             if (completedReps < exercise.reps - 1) {
               setCompletedReps(prev => prev + 1);
-              return exercise.duration;
+              return 5; // Always reset to 5 seconds
             }
             return 0;
           }
@@ -89,7 +89,7 @@ export default function VRTherapyMode({ isOpen, onClose, exercise }: VRTherapyMo
       }, 1000);
     }
     return () => clearInterval(interval);
-  }, [isPlaying, timer, completedReps, exercise.reps, exercise.duration]);
+  }, [isPlaying, timer, completedReps, exercise.reps]);
 
   // VR scoring simulation
   useEffect(() => {
@@ -107,7 +107,7 @@ export default function VRTherapyMode({ isOpen, onClose, exercise }: VRTherapyMo
   };
 
   const handleReset = () => {
-    setTimer(exercise.duration);
+    setTimer(5); // Always reset to 5 seconds
     setCompletedReps(0);
     setIsPlaying(false);
     setVrScore(0);

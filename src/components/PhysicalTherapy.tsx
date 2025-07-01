@@ -5,7 +5,7 @@ import VRTherapyMode from './VRTherapyMode';
 export default function PhysicalTherapy() {
   const [currentExercise, setCurrentExercise] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [timer, setTimer] = useState(30);
+  const [timer, setTimer] = useState(5);
   const [completedReps, setCompletedReps] = useState(0);
   const [isVRMode, setIsVRMode] = useState(false);
 
@@ -14,7 +14,7 @@ export default function PhysicalTherapy() {
       id: 1,
       name: 'Arm Raises',
       description: 'Lift your arms up and down slowly',
-      duration: 30,
+      duration: 5,
       reps: 10,
       difficulty: 'Beginner',
       muscleGroup: 'Shoulders',
@@ -25,7 +25,7 @@ export default function PhysicalTherapy() {
       id: 2,
       name: 'Knee Bends',
       description: 'Slowly bend and straighten your knee',
-      duration: 45,
+      duration: 5,
       reps: 15,
       difficulty: 'Intermediate',
       muscleGroup: 'Legs',
@@ -36,7 +36,7 @@ export default function PhysicalTherapy() {
       id: 3,
       name: 'Neck Rotations',
       description: 'Gently rotate your neck in circles',
-      duration: 20,
+      duration: 5,
       reps: 8,
       difficulty: 'Beginner',
       muscleGroup: 'Neck',
