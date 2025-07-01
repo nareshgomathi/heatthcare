@@ -597,67 +597,7 @@ DISCLAIMER: This AI-powered mood analysis is for informational purposes only and
               </div>
             )}
 
-            {/* Final Analysis Results */}
-            {finalAnalysis && (
-              <div className={`p-6 rounded-xl border-2 ${getMoodColor(finalAnalysis.riskLevel)}`}>
-                <div className="flex items-center space-x-3 mb-4">
-                  {React.createElement(getMoodIcon(finalAnalysis.riskLevel), { className: "h-6 w-6" })}
-                  <h3 className="text-lg font-semibold">Mental Health Assessment</h3>
-                </div>
-                
-                <div className="space-y-4">
-                  <div>
-                    <h4 className="font-medium mb-2">Overall Mood:</h4>
-                    <p className="text-sm font-semibold">{finalAnalysis.overallMood}</p>
-                  </div>
-                  
-                  <div>
-                    <h4 className="font-medium mb-2">Key Indicators:</h4>
-                    <ul className="text-sm space-y-1">
-                      {finalAnalysis.indicators.map((indicator, index) => (
-                        <li key={index} className="flex items-center space-x-2">
-                          <div className="w-1.5 h-1.5 bg-current rounded-full"></div>
-                          <span>{indicator}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  
-                  <div>
-                    <h4 className="font-medium mb-2">Recommendations:</h4>
-                    <ul className="text-sm space-y-1">
-                      {finalAnalysis.recommendations.map((rec, index) => (
-                        <li key={index} className="flex items-center space-x-2">
-                          <CheckCircle className="w-3 h-3" />
-                          <span>{rec}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-                
-                <div className="mt-6 space-y-3">
-                  <button 
-                    onClick={downloadMoodReport}
-                    className="w-full bg-white text-current border border-current px-4 py-2 rounded-lg hover:bg-current hover:text-white transition-colors flex items-center justify-center space-x-2"
-                  >
-                    <Download className="h-4 w-4" />
-                    <span>Download Report</span>
-                  </div>
-                  
-                  {finalAnalysis.riskLevel !== 'low' && (
-                    <button 
-                      onClick={() => setShowTherapistModal(true)}
-                      className="w-full bg-current text-white px-4 py-2 rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center space-x-2"
-                    >
-                      <Phone className="h-4 w-4" />
-                      <span>Connect with Therapist</span>
-                    </button>
-                  )}
-                </div>
-              </div>
-            )}
-
+            
             {/* Mental Health Resources */}
             <div className="bg-white p-6 rounded-xl shadow-lg">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Mental Health Resources</h3>
