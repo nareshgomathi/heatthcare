@@ -5,6 +5,7 @@ import SymptomChecker from './components/SymptomChecker';
 import Telemedicine from './components/Telemedicine';
 import HealthMonitoring from './components/HealthMonitoring';
 import PhysicalTherapy from './components/PhysicalTherapy';
+import MoodScanner from './components/MoodScanner';
 import About from './components/About';
 
 function App() {
@@ -22,6 +23,8 @@ function App() {
         return <HealthMonitoring />;
       case 'therapy':
         return <PhysicalTherapy />;
+      case 'mood-scanner':
+        return <MoodScanner />;
       case 'about':
         return <About />;
       default:

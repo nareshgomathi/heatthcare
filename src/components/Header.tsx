@@ -1,5 +1,5 @@
 import React from 'react';
-import { Activity, Menu, X } from 'lucide-react';
+import { Activity, Menu, X, Brain } from 'lucide-react';
 
 interface HeaderProps {
   currentSection: string;
@@ -15,6 +15,7 @@ export default function Header({ currentSection, onSectionChange }: HeaderProps)
     { id: 'telemedicine', label: 'Telemedicine' },
     { id: 'monitoring', label: 'Health Monitor' },
     { id: 'therapy', label: 'Therapy' },
+    { id: 'mood-scanner', label: 'Mood Scanner' },
     { id: 'about', label: 'About' }
   ];
 
@@ -38,13 +39,14 @@ export default function Header({ currentSection, onSectionChange }: HeaderProps)
               <button
                 key={item.id}
                 onClick={() => onSectionChange(item.id)}
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors flex items-center space-x-1 ${
                   currentSection === item.id
                     ? 'text-blue-600 bg-blue-50'
                     : 'text-gray-700 hover:text-blue-600 hover:bg-gray-50'
                 }`}
               >
-                {item.label}
+                {item.id === 'mood-scanner' && <Brain className="h-4 w-4" />}
+                <span>{item.label}</span>
               </button>
             ))}
           </nav>
@@ -75,13 +77,14 @@ export default function Header({ currentSection, onSectionChange }: HeaderProps)
                     onSectionChange(item.id);
                     setIsMobileMenuOpen(false);
                   }}
-                  className={`px-3 py-2 rounded-md text-sm font-medium text-left transition-colors ${
+                  className={`px-3 py-2 rounded-md text-sm font-medium text-left transition-colors flex items-center space-x-2 ${
                     currentSection === item.id
                       ? 'text-blue-600 bg-blue-50'
                       : 'text-gray-700 hover:text-blue-600 hover:bg-gray-50'
                   }`}
                 >
-                  {item.label}
+                  {item.id === 'mood-scanner' && <Brain className="h-4 w-4" />}
+                  <span>{item.label}</span>
                 </button>
               ))}
             </div>
